@@ -91,17 +91,26 @@
 
         function onMouseDown(event) {
             isDragging = true;
+            previousMousePosition.x = event.clientX;
+            previousMousePosition.y = event.clientY;
         }
 
         function onMouseMove(event) {
             if (!isDragging) return;
+
             const deltaMove = {
                 x: event.clientX - previousMousePosition.x,
                 y: event.clientY - previousMousePosition.y
             };
 
-            const angleY = deltaMove.x * 0.005;
-            const angleX = deltaMove.y * 0.005;
+            // Determine the orbit direction based on mouse movement
+            const orbitDirection = {
+                x: deltaMove.y > 0 ? 1 : -1, // Invert Y to orbit horizontally
+                y: deltaMove.x > 0 ? 1 : -1  // Invert X to orbit vertically
+            };
+
+            const angleY = Math.abs(deltaMove.x) * 0.005 * orbitDirection.y;
+            const angleX = Math.abs(deltaMove.y) * 0.005 * orbitDirection.x;
 
             cube.rotation.x += angleX;
             cube.rotation.y += angleY;
@@ -113,6 +122,7 @@
                 y: event.clientY
             };
         }
+
 
         function onMouseUp(event) {
             isDragging = false;
